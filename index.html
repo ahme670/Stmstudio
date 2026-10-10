@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STM — Visual Production Studio</title>
+
+<style>
+:root{
+    --black:#080808;
+    --card-bg:#111111;
+    --white:#ffffff;
+    --gray:#858585;
+    --red:#e30613;
+    --red-glow:rgba(227, 6, 19, 0.35);
+    --line:rgba(255,255,255,.12);
+    --font-main:sans-serif;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:var(--black);
+    color:var(--white);
+    font-family:var(--font-main);
+    overflow-x:hidden;
+    width: 100%;
+}
+
+a{
+    color:inherit;
+    text-decoration:none;
+}
+
+button{
+    font:inherit;
+    border:none;
+    background:none;
+    cursor:pointer;
+}
+
+/* =====================================================
+   STM BRAND GUIDELINE EXTENSIONS
+===================================================== */
+
+.stm-brand-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--red);
+    color: var(--white);
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-weight: 900;
+    font-style: italic;
+    font-size: 20px;
+    letter-spacing: -1px;
+    line-height: 1;
+    box-shadow: 0 0 15px var(--red-glow);
+}
+
+.stm-brand-badge sup {
+    font-size: 8px;
+    font-style: normal;
+    margin-left: 2px;
+    top: -0.4em;
+}
+
+.stm-studio-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--white);
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.stm-studio-logo .divider {
+    width: 1px;
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.stm-title-heavy {
+    font-weight: 900;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: -0.05em;
+}
+
+.stm-tagline {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.header{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:86px;
+    padding:0 5%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    z-index:900;
+    background: rgba(8, 8, 8, 0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--line);
+    transform:translateY(0);
+    transition:transform .45s cubic-bezier(.16,1,.3,1);
+}
+
+.header.header-hidden{
+    transform:translateY(-110%);
+}
+
+.header-center{
+    display:flex;
+    gap:25px;
+}
+
+.header-center a{
+    font-size:11px;
+    letter-spacing:2px;
+    opacity:.7;
+    transition:.3s;
+    font-weight: 700;
+}
+
+.header-center a:hover{
+    opacity:1;
+    color: var(--red);
+}
+
+.header-contact{
+    border:1px solid rgba(255,255,255,.28);
+    padding:10px 18px;
+    color:#fff;
+    font-size:10px;
+    letter-spacing:1.8px;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    transition:.3s;
+    font-weight: 700;
+    border-radius: 4px;
+}
+
+.header-contact span{
+    font-size:14px;
+    transition: transform 0.3s;
+}
+
+.header-contact:hover{
+    background:var(--white);
+    color:var(--black);
+    border-color: var(--white);
+}
+
+#work,#clients,#ads,#digital-ads,#product,#events,#podcast,#constructions,#services,#editing,#about,#contact{
+    scroll-margin-top:90px;
+}
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.hero{
+    height:100vh;
+    min-height:600px;
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    padding:0 5%;
+}
+
+.hero-bg{
+    position:absolute;
+    inset:-8%;
+    z-index:0;
+}
+
+.hero-bg img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    filter:grayscale(80%) contrast(110%);
+    opacity:.3;
+    transform:scale(1.05);
+}
+
+.hero-grid{
+    position:absolute;
+    inset:0;
+    background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+    background-size:50px 50px;
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+    width:100%;
+}
+
+.hero-top{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    font-size:10px;
+    letter-spacing:4px;
+    color:#aaa;
+    margin-bottom:20px;
+    font-weight: 700;
+}
+
+.hero-top i{
+    width:40px;
+    height:2px;
+    background:var(--red);
+    box-shadow: 0 0 10px var(--red);
+}
+
+.hero-logo-large {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+    user-select: none;
+}
+
+.hero-logo-large .hero-badge {
+    background-color: var(--red);
+    color: var(--white);
+    padding: 8px 20px 12px;
+    border-radius: 12px;
+    font-weight: 900;
+    font-style: italic;
+    font-size: clamp(50px, 14vw, 180px);
+    letter-spacing: -0.05em;
+    line-height: 0.8;
+    box-shadow: 0 10px 40px var(--red-glow);
+}
+
+.hero-logo-large .hero-badge sup {
+    font-size: 0.3em;
+    font-style: normal;
+    margin-left: 4px;
+    top: -0.5em;
+}
+
+.hero-logo-large .hero-studio-text {
+    font-size: clamp(35px, 9vw, 110px);
+    font-weight: 900;
+    font-style: italic;
+    color: var(--white);
+    letter-spacing: -0.05em;
+    line-height: 0.8;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.8);
+}
+
+.hero-sub{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-top:35px;
+}
+
+.hero-description{
+    max-width:480px;
+}
+
+/* =====================================================
+   INTRO / ABOUT
+===================================================== */
+
+.intro{
+    padding:60px 5%;
+}
+
+.intro-box {
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(12, 12, 12, 0.95));
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 40px 30px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+}
+
+.intro-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 150px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--red), transparent);
+}
+
+.intro-small{
+    color:var(--red);
+    font-size:11px;
+    letter-spacing:4px;
+    margin-bottom:20px;
+    font-weight: 800;
+}
+
+.intro-title{
+    font-size:clamp(28px, 5vw, 75px);
+    line-height:1.05;
+    letter-spacing:-.04em;
+    font-weight:900;
+}
+
+.intro-title .outline{
+    color:transparent;
+    -webkit-text-stroke:1px rgba(255,255,255,0.35);
+}
+
+.intro-bottom{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: flex-end;
+    margin-top:40px;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.intro-bottom p{
+    color:#aaa;
+    font-size:14px;
+    line-height:1.7;
+}
+
+.intro-stats {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-num {
+    font-size: clamp(24px, 3vw, 40px);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1;
+    font-style: italic;
+}
+
+.stat-num span {
+    color: var(--red);
+}
+
+.stat-label {
+    font-size: 9px;
+    color: #777;
+    letter-spacing: 1px;
+    margin-top: 6px;
+    font-weight: 700;
+}
+
+/* =====================================================
+   CLIENTS LOGOS SECTION
+===================================================== */
+
+.clients-section {
+    padding: 80px 5%;
+    background: var(--black);
+    border-top: 1px solid var(--line);
+}
+
+.clients-head {
+    margin-bottom: 40px;
+}
+
+.clients-label {
+    color: var(--red);
+    font-size: 11px;
+    letter-spacing: 4px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.clients-title {
+    font-size: clamp(35px, 7vw, 90px);
+    line-height: 0.9;
+}
+
+.clients-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
+}
+
+.client-logo-card {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 25px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.client-logo-card:hover {
+    background: #181818;
+    border-color: rgba(227, 6, 19, 0.5);
+    transform: translateY(-3px);
+}
+
+.client-logo-icon {
+    font-size: 22px;
+    font-weight: 900;
+    font-style: italic;
+    color: var(--white);
+    text-align: center;
+}
+
+.client-logo-icon span {
+    color: var(--red);
+}
+
+.client-name {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #888;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+/* =====================================================
+   WORK
+===================================================== */
+
+.work{
+    padding:80px 0 0;
+}
+
+.work-header{
+    padding:0 5%;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-bottom:40px;
+}
+
+.work-number{
+    color:var(--red);
+    font-size:11px;
+    letter-spacing:4px;
+    font-weight: 800;
+}
+
+.work-title{
+    font-size:clamp(50px, 10vw, 140px);
+    line-height:.8;
+}
+
+.work-count{
+    color:#666;
+    font-size:11px;
+    letter-spacing:2px;
+}
+
+/* =====================================================
+   PROJECT & VIDEO CONTAINER
+===================================================== */
+
+.project{
+    position:relative;
+    height:70vh;
+    min-height:450px;
+    overflow:hidden;
+    border-top:1px solid var(--line);
+    cursor: pointer;
+}
+
+.project-image{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+}
+
+.project-image img, .project-image iframe{
+    width:100%;
+    height:100%;
+    border:none;
+    object-fit:cover;
+    pointer-events: none;
+}
+
+.project-overlay{
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(90deg, rgba(8,8,8,.9), transparent 80%),
+        linear-gradient(0deg, rgba(8,8,8,.85), rgba(8,8,8,.3));
+    pointer-events: none;
+}
+
+.project-content{
+    position:absolute;
+    inset:0;
+    padding:30px 5%;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    z-index:2;
+    pointer-events: none;
+}
+
+.project-top{
+    display:flex;
+    justify-content:space-between;
+    font-size:10px;
+    letter-spacing:2px;
+    font-weight: 700;
+}
+
+.project-top span:first-child {
+    color: var(--red);
+}
+
+.project-top span:last-child{
+    color:#aaa;
+}
+
+.project-bottom{
+    display:flex;
+    flex-wrap: wrap;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap: 15px;
+}
+
+.project-name{
+    font-size:clamp(40px, 8vw, 110px);
+    line-height:.8;
+}
+
+.project-info{
+    max-width:260px;
+    color:#bbb;
+    font-size:11px;
+    line-height:1.6;
+}
+
+.project-arrow{
+    width:50px;
+    height:50px;
+    border:1px solid rgba(255,255,255,.3);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    backdrop-filter: blur(4px);
+    pointer-events: auto;
+}
+
+.project:hover .project-arrow{
+    background:var(--red);
+    border-color:var(--red);
+}
+
+/* =====================================================
+   RED BREAK MARQUEE
+===================================================== */
+
+.red-break{
+    height:60px;
+    background:var(--red);
+    color:white;
+    display:flex;
+    align-items:center;
+    overflow:hidden;
+    box-shadow: 0 0 30px var(--red-glow);
+}
+
+.red-break-text{
+    width:100%;
+    white-space:nowrap;
+    font-size:clamp(18px, 2vw, 26px);
+    font-style: italic;
+    font-weight:900;
+}
+
+.red-break-track{
+    display:inline-block;
+    animation: marquee 25s linear infinite;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+}
+
+/* =====================================================
+   SERVICES
+===================================================== */
+
+.services{
+    padding:100px 5%;
+    background: var(--black);
+    border-top: 1px solid var(--line);
+}
+
+.services-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-bottom:50px;
+}
+
+.services-title{
+    font-size:clamp(45px, 9vw, 120px);
+    line-height:.8;
+}
+
+.services-label{
+    color:var(--red);
+    font-size:11px;
+    letter-spacing:4px;
+    font-weight: 800;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.service-card {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 35px 25px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 280px;
+}
+
+.service-card:hover {
+    background: #161616;
+    border-color: rgba(227, 6, 19, 0.5);
+}
+
+.service-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 2;
+}
+
+.service-badge {
+    color: var(--red);
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: 800;
+}
+
+.service-icon-wrap {
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.service-card-body {
+    z-index: 2;
+    margin-top: 30px;
+}
+
+.service-card-title {
+    font-size: clamp(22px, 2.5vw, 30px);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 12px;
+}
+
+.service-card-desc {
+    color: #888;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.service-bg-num {
+    position: absolute;
+    bottom: -10px;
+    right: 15px;
+    font-size: 110px;
+    font-weight: 900;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.02);
+    user-select: none;
+    line-height: 0.8;
+    z-index: 1;
+}
+
+/* =====================================================
+   CONTACT & BUTTONS
+===================================================== */
+
+.contact{
+    min-height:70vh;
+    padding:100px 5%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.contact-label{
+    color:var(--red);
+    font-size:11px;
+    letter-spacing:4px;
+    margin-bottom:25px;
+    font-weight: 800;
+}
+
+.contact-title{
+    font-size:clamp(55px, 13vw, 200px);
+    line-height:.75;
+    word-break: break-word;
+}
+
+.contact-title span{
+    color:var(--red);
+    text-shadow: 0 0 40px var(--red-glow);
+}
+
+.contact-footer{
+    display:flex;
+    flex-wrap: wrap;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-top:50px;
+    gap: 30px;
+}
+
+.contact-text{
+    color:#888;
+    max-width:350px;
+    font-size:12px;
+    line-height:1.8;
+}
+
+.contact-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.contact-button{
+    background: transparent;
+    color: var(--white);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 14px 24px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.contact-button:hover {
+    background: var(--white);
+    color: var(--black);
+    border-color: var(--white);
+    transform: translateY(-2px);
+}
+
+/* =====================================================
+   PROJECT LIGHTBOX / MODAL
+===================================================== */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 8, 8, 0.95);
+    backdrop-filter: blur(20px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 4%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    max-width: 900px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 25px;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    color: #aaa;
+    font-size: 26px;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: var(--red);
+}
+
+.modal-title {
+    font-size: clamp(22px, 4vw, 36px);
+    margin-bottom: 20px;
+}
+
+.modal-gallery {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.modal-gallery iframe {
+    width: 100%;
+    height: 300px;
+    border: none;
+    border-radius: 8px;
+}
+
+/* =====================================================
+   RESPONSIVE MEDIA QUERIES FOR MOBILE
+===================================================== */
+
+@media(max-width: 768px) {
+    .header{
+        height: 70px;
+        padding: 0 4%;
+    }
+    .header-center {
+        display: none; /* إخفاء القائمة في الموبايل أو يمكن تحويلها لموبايل ميني */
+    }
+    .intro-bottom {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .project-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .project-info {
+        max-width: 100%;
+    }
+    .contact-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .contact-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+    .contact-button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer{
+    padding:30px 5%;
+    border-top:1px solid var(--line);
+    display:flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content:space-between;
+    color:#666;
+    font-size:10px;
+    letter-spacing:2px;
+    font-weight: 600;
+}
+</style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <a href="#" class="stm-studio-logo">
+      <div class="stm-brand-badge">stm<sup>&reg;</sup></div>
+      <div class="divider"></div>
+      <span>Studio</span>
+    </a>
+    <nav class="header-center">
+      <a href="#work">WORK</a>
+      <a href="#clients">CLIENTS</a>
+      <a href="#services">SERVICES</a>
+      <a href="#about">ABOUT</a>
+      <a href="#contact">CONTACT</a>
+    </nav>
+    <a href="#contact" class="header-contact">
+      GET IN TOUCH <span>&rarr;</span>
+    </a>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1920&q=80" alt="Studio Background">
+    </div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-top">
+        <i></i>
+        <span>VISUAL PRODUCTION STUDIO</span>
+      </div>
+      
+      <!-- LOGO -->
+      <div class="hero-logo-large">
+        <div class="hero-badge">stm<sup>&reg;</sup></div>
+        <div class="hero-studio-text">STUDIO</div>
+      </div>
+
+      <div class="hero-sub">
+        <div class="hero-description">
+          <p class="stm-tagline">Freeze it.. Own it.. Squeeze it.. Hold it</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTRO / ABOUT SECTION -->
+  <section id="about" class="intro">
+    <div class="intro-box">
+      <div class="intro-small">// ABOUT STM STUDIO</div>
+      <h2 class="intro-title stm-title-heavy">
+        WE CREATE VISUAL STORIES THAT <span class="outline">DOMINATE THE DIGITAL SPACE.</span>
+      </h2>
+      <div class="intro-bottom">
+        <p>Specializing in commercial direction, cinematic editing, and full-scale video production for leading visual platforms. Driven by high aesthetic standards and narrative precision.</p>
+        
+        <div class="intro-stats">
+          <div class="stat-item">
+            <div class="stat-num">10<span>+</span></div>
+            <div class="stat-label">YEARS EXP.</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">5000<span>+</span></div>
+            <div class="stat-label">PROJECTS</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">4K<span></span></div>
+            <div class="stat-label">QUALITY</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLIENTS LOGOS SECTION -->
+  <section id="clients" class="clients-section">
+    <div class="clients-head">
+      <div class="clients-label">// TRUSTED BY INDUSTRY LEADERS</div>
+      <h2 class="clients-title stm-title-heavy">OUR CLIENTS</h2>
+    </div>
+
+    <div class="clients-grid">
+      <div class="client-logo-card">
+        <div class="client-logo-icon">PEPSI<span>.</span></div>
+        <div class="client-name">Pepsi Brand</div>
+      </div>
+      <div class="client-logo-card">
+        <div class="client-logo-icon">COCA-COLA<span>.</span></div>
+        <div class="client-name">Coca-Cola</div>
+      </div>
+      <div class="client-logo-card">
+        <div class="client-logo-icon">CHIPSY<span>.</span></div>
+        <div class="client-name">Chipsy</div>
+      </div>
+      <div class="client-logo-card">
+        <div class="client-logo-icon">MANDOLIN<span>.</span></div>
+        <div class="client-name">Biscuits & Wafers</div>
+      </div>
+      <div class="client-logo-card">
+        <div class="client-logo-icon">VODAFONE<span>.</span></div>
+        <div class="client-name">Vodafone</div>
+      </div>
+      <div class="client-logo-card">
+        <div class="client-logo-icon">WAFFARHA<span>.</span></div>
+        <div class="client-name">Do More With What You Have</div>
+      </div>
+      <div class="client-logo-card">
+        <div class="client-logo-icon">EL EZZ<span>.</span></div>
+        <div class="client-name">Build Future</div>
+      </div>
+      <div class="client-logo-card">
+        <div class="client-logo-icon">JADEER<span>.</span></div>
+        <div class="client-name">Jadeer Developments</div>
+      </div>
+      <div class="client-logo-card">
+        <div class="client-logo-icon">MERCON<span>.</span></div>
+        <div class="client-name">Mercon Developments</div>
+      </div>
+      <div class="client-logo-card">
+        <div class="client-logo-icon">MADAR<span>.</span></div>
+        <div class="client-name">Madar Development</div>
+      </div>
+      <div class="client-logo-card">
+        <div class="client-logo-icon">KION<span>.</span></div>
+        <div class="client-name">Electrical Products</div>
+      </div>
+      <div class="client-logo-card">
+        <div class="client-logo-icon">LEADSMART<span>.</span></div>
+        <div class="client-name">Real Estate Platform</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK SECTION -->
+  <section id="work" class="work">
+    <div class="work-header">
+      <div>
+        <div class="work-number">SELECTED WORK</div>
+        <h2 class="work-title stm-title-heavy">FEATURED</h2>
+      </div>
+      <div class="work-count">(06 CATEGORIES)</div>
+    </div>
+
+    <!-- PROJECT 1: ADS -->
+    <article id="ads" class="project" onclick="openAdsShowcase()">
+      <div class="project-image">
+        <iframe src="https://drive.google.com/file/d/1_sLP_lKAUjpINpQRAye2islZ0-YhRCvz/preview" allow="autoplay"></iframe>
+      </div>
+      <div class="project-overlay"></div>
+      <div class="project-content">
+        <div class="project-top">
+          <span>01 / ADVERTISING (6 VIDEOS)</span>
+          <span>2026</span>
+        </div>
+        <div class="project-bottom">
+          <h3 class="project-name stm-title-heavy">ADS</h3>
+          <div class="project-info">High-impact brand campaigns engineered for high-conversion and global exposure.</div>
+          <div class="project-arrow">&rarr;</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- PROJECT 2: DIGITAL ADS -->
+    <article id="digital-ads" class="project" onclick="openDigitalAdsShowcase()">
+      <div class="project-image">
+        <iframe src="https://drive.google.com/file/d/1kMkvRan0Twa9gzg-SpVDp8XsVhGUzotZ/preview" allow="autoplay"></iframe>
+      </div>
+      <div class="project-overlay"></div>
+      <div class="project-content">
+        <div class="project-top">
+          <span>02 / SHORT FORM ADS (5 VIDEOS)</span>
+          <span>2026</span>
+        </div>
+        <div class="project-bottom">
+          <h3 class="project-name stm-title-heavy">DIGITAL ADS</h3>
+          <div class="project-info">Fast-paced, high-engagement promotional visual clips crafted for social platforms.</div>
+          <div class="project-arrow">&rarr;</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- PROJECT 3: PRODUCT -->
+    <article id="product" class="project" onclick="openProductShowcase()">
+      <div class="project-image">
+        <iframe src="https://drive.google.com/file/d/1trSRXfaZnwii__ZQCX3wrdRknkowmiMb/preview" allow="autoplay"></iframe>
+      </div>
+      <div class="project-overlay"></div>
+      <div class="project-content">
+        <div class="project-top">
+          <span>03 / PRODUCT SHOWCASE (5 VIDEOS)</span>
+          <span>2026</span>
+        </div>
+        <div class="project-bottom">
+          <h3 class="project-name stm-title-heavy">PRODUCT</h3>
+          <div class="project-info">Cinematic lighting and macro videography highlighting product details and luxury design.</div>
+          <div class="project-arrow">&rarr;</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- PROJECT 4: EVENTS -->
+    <article id="events" class="project" onclick="openEventsShowcase()">
+      <div class="project-image">
+        <iframe src="https://drive.google.com/file/d/1pVbRZb_1y3xaGCj_1s5b9Muf34iGs2BO/preview" allow="autoplay"></iframe>
+      </div>
+      <div class="project-overlay"></div>
+      <div class="project-content">
+        <div class="project-top">
+          <span>04 / LIVE COVERAGE (5 VIDEOS)</span>
+          <span>2026</span>
+        </div>
+        <div class="project-bottom">
+          <h3 class="project-name stm-title-heavy">EVENTS</h3>
+          <div class="project-info">Dynamic live event filming, festival coverage, and high-energy moments.</div>
+          <div class="project-arrow">&rarr;</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- PROJECT 5: PODCAST -->
+    <article id="podcast" class="project" onclick="openPodcastShowcase()">
+      <div class="project-image">
+        <iframe src="https://drive.google.com/file/d/1b_lFg8Kyb6bfBBTmp__wmAAo_y8ybnxk/preview" allow="autoplay"></iframe>
+      </div>
+      <div class="project-overlay"></div>
+      <div class="project-content">
+        <div class="project-top">
+          <span>05 / AUDIO & VIDEO TALKS (4 VIDEOS)</span>
+          <span>2026</span>
+        </div>
+        <div class="project-bottom">
+          <h3 class="project-name stm-title-heavy">PODCAST</h3>
+          <div class="project-info">Multi-cam video podcast recording, crystal-clear studio audio, and episodic content editing.</div>
+          <div class="project-arrow">&rarr;</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- PROJECT 6: CONSTRUCTIONS -->
+    <article id="constructions" class="project" onclick="openConstructionsShowcase()">
+      <div class="project-image">
+        <iframe src="https://drive.google.com/file/d/11jYxoBcXETfIihkp7dfrQyb2ksLXJ8JS/preview" allow="autoplay"></iframe>
+      </div>
+      <div class="project-overlay"></div>
+      <div class="project-content">
+        <div class="project-top">
+          <span>06 / ARCHITECTURE (2 VIDEOS)</span>
+          <span>2026</span>
+        </div>
+        <div class="project-bottom">
+          <h3 class="project-name stm-title-heavy">CONSTRUCTIONS</h3>
+          <div class="project-info">Large-scale site documentation, architectural showcases, and construction progress visual reels.</div>
+          <div class="project-arrow">&rarr;</div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- RED BREAK MARQUEE -->
+  <div class="red-break">
+    <div class="red-break-text">
+      <div class="red-break-track">
+        <span>CINEMATIC DIRECTION &mdash; POST-PRODUCTION &mdash; BRAND VISUALS &mdash; SOUND DESIGN &mdash; MOTION GRAPHICS &mdash;&nbsp;</span>
+        <span>CINEMATIC DIRECTION &mdash; POST-PRODUCTION &mdash; BRAND VISUALS &mdash; SOUND DESIGN &mdash; MOTION GRAPHICS &mdash;&nbsp;</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICES SECTION -->
+  <section id="services" class="services">
+    <div class="services-head">
+      <div>
+        <div class="services-label">// OUR CAPABILITIES</div>
+        <h2 class="services-title stm-title-heavy">SERVICES</h2>
+      </div>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-card-top">
+          <span class="service-badge">SERVICE // 01</span>
+          <div class="service-icon-wrap">&rarr;</div>
+        </div>
+        <div class="service-card-body">
+          <h3 class="service-card-title stm-title-heavy">Videography & Direction</h3>
+          <p class="service-card-desc">On-location filming with cinema-grade camera rigs, professional studio lighting setups, and visual storytelling direction.</p>
+        </div>
+        <div class="service-bg-num">01</div>
+      </div>
+
+      <div class="service-card" id="editing">
+        <div class="service-card-top">
+          <span class="service-badge">SERVICE // 02</span>
+          <div class="service-icon-wrap">&rarr;</div>
+        </div>
+        <div class="service-card-body">
+          <h3 class="service-card-title stm-title-heavy">Post-Production & Editing</h3>
+          <p class="service-card-desc">Precision video editing, rhythmic pacing, generative workflow integrations, multi-track sound design, and color grading.</p>
+        </div>
+        <div class="service-bg-num">02</div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-card-top">
+          <span class="service-badge">SERVICE // 03</span>
+          <div class="service-icon-wrap">&rarr;</div>
+        </div>
+        <div class="service-card-body">
+          <h3 class="service-card-title stm-title-heavy">Reels & Short-Form Content</h3>
+          <p class="service-card-desc">Fast-paced, high-engagement social video content specifically optimized for audience retention and high viral potential.</p>
+        </div>
+        <div class="service-bg-num">03</div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-card-top">
+          <span class="service-badge">SERVICE // 04</span>
+          <div class="service-icon-wrap">&rarr;</div>
+        </div>
+        <div class="service-card-body">
+          <h3 class="service-card-title stm-title-heavy">Color Grading & Sound Design</h3>
+          <p class="service-card-desc">Custom cinematic look creation, color correction, ambient audio mixes, and spatial sound design for video clarity.</p>
+        </div>
+        <div class="service-bg-num">04</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section id="contact" class="contact">
+    <div class="contact-label">// LET'S WORK TOGETHER</div>
+    <h2 class="contact-title stm-title-heavy">START A <span>PROJECT</span></h2>
+    
+    <div class="contact-footer">
+      <div class="contact-text">
+        Ready to take your content to the next level? Get in touch with our team directly.
+      </div>
+      <div class="contact-actions">
+        <a href="https://www.instagram.com/stmstudioeg?stkn=MWhkbGZzazhoN2thZQ==" target="_blank" class="contact-button">
+          INSTAGRAM <span>&rarr;</span>
+        </a>
+        <a href="https://www.facebook.com/share/1C1toaaEMS/?mibextid=wwXIfr" target="_blank" class="contact-button">
+          FACEBOOK <span>&rarr;</span>
+        </a>
+        <a href="https://wa.me/201142545653" target="_blank" class="contact-button">
+          WHATSAPP <span>&rarr;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>&copy; 2026 STM STUDIO. ALL RIGHTS RESERVED.</div>
+    <div>VISUAL PRODUCTION</div>
+  </footer>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="galleryModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeGallery()">&times;</button>
+      <h3 class="modal-title stm-title-heavy" id="modalTitle">PROJECT GALLERY</h3>
+      <div class="modal-gallery" id="modalGallery"></div>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    function openAdsShowcase() {
+      const modal = document.getElementById('galleryModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalGallery = document.getElementById('modalGallery');
+      
+      modalTitle.textContent = "COMMERCIAL ADS SHOWCASE (6 PROJECTS)";
+      modalGallery.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:20px; width:100%;">
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">01. Kion Ad</h4>
+            <iframe src="https://drive.google.com/file/d/1_sLP_lKAUjpINpQRAye2islZ0-YhRCvz/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">02. LeadsMart's Ad</h4>
+            <iframe src="https://drive.google.com/file/d/1lyNsikQYdT1l80oU3IWOGBYWrTCVixQx/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">03. LeadsMart's Final Ad</h4>
+            <iframe src="https://drive.google.com/file/d/12eZ88Ph-ECCDPNrqgbkod_pxFgyvgHjJ/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">04. EL Basyouny Ad</h4>
+            <iframe src="https://drive.google.com/file/d/1ylZPYiAEO9WypeuL8XPCpKvnxDftPJ8y/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">05. KION DC</h4>
+            <iframe src="https://drive.google.com/file/d/19JY-T8EyMb_p4LNYZhhwrE2RvkrdGbGH/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">06. RRS SUMER01</h4>
+            <iframe src="https://drive.google.com/file/d/1_j856kWO5vtqFCF0xEzlJE5eONL0R_xS/preview" allow="autoplay"></iframe>
+          </div>
+        </div>
+      `;
+      modal.classList.add('active');
+    }
+
+    function openDigitalAdsShowcase() {
+      const modal = document.getElementById('galleryModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalGallery = document.getElementById('modalGallery');
+      
+      modalTitle.textContent = "DIGITAL ADS SHOWCASE (5 VIDEOS)";
+      modalGallery.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:20px; width:100%;">
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">01. Avanti copy 3</h4>
+            <iframe src="https://drive.google.com/file/d/1kMkvRan0Twa9gzg-SpVDp8XsVhGUzotZ/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">02. Hethara</h4>
+            <iframe src="https://drive.google.com/file/d/1LMlehLNjI38aN2mbhdKAOILbYjzG7YAM/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">03. ECRAL AD copy 2</h4>
+            <iframe src="https://drive.google.com/file/d/1j94t2JvVHTYXz9gtqfg4uK4VV2fWKHqd/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">04. Coffee Fellows</h4>
+            <iframe src="https://drive.google.com/file/d/1QzvLkf9JdZf2De0_y--aaNLEv9tHVKt-/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">05. Avanti copy 2</h4>
+            <iframe src="https://drive.google.com/file/d/19HS8h6Ayznr62eqde6cY3LW5H4Z8envK/preview" allow="autoplay"></iframe>
+          </div>
+        </div>
+      `;
+      modal.classList.add('active');
+    }
+
+    function openProductShowcase() {
+      const modal = document.getElementById('galleryModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalGallery = document.getElementById('modalGallery');
+      
+      modalTitle.textContent = "PRODUCT SHOWCASE (5 VIDEOS)";
+      modalGallery.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:20px; width:100%;">
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">01. Copy of Cnc 2</h4>
+            <iframe src="https://drive.google.com/file/d/1trSRXfaZnwii__ZQCX3wrdRknkowmiMb/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">02. Hethara</h4>
+            <iframe src="https://drive.google.com/file/d/1TJQfZory_Wq14VlgLfqO5NkxOCgigq-D/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">03. Rose</h4>
+            <iframe src="https://drive.google.com/file/d/10_5-d31JM-U15BE_S-PB5ymQRIQl7Qej/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">04. Aqua 1</h4>
+            <iframe src="https://drive.google.com/file/d/15ZT2IV9j82j8Y4uULUF2b1TzsYhEu1c-/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">05. Final Tuna</h4>
+            <iframe src="https://drive.google.com/file/d/1hPf1upoHFVONW2YCraxwrBWCuimZXhoC/preview" allow="autoplay"></iframe>
+          </div>
+        </div>
+      `;
+      modal.classList.add('active');
+    }
+
+    function openEventsShowcase() {
+      const modal = document.getElementById('galleryModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalGallery = document.getElementById('modalGallery');
+      
+      modalTitle.textContent = "EVENTS COVERAGE (5 VIDEOS)";
+      modalGallery.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:20px; width:100%;">
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">01. VINCHY final</h4>
+            <iframe src="https://drive.google.com/file/d/1pVbRZb_1y3xaGCj_1s5b9Muf34iGs2BO/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">02. Zaya Ramadan 2026</h4>
+            <iframe src="https://drive.google.com/file/d/1GbXnE6WhujaNY0_juPRdQ_Fr_rZMpQt0/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">03. Air Show Stm Final</h4>
+            <iframe src="https://drive.google.com/file/d/151EVOmsToCOzz_87EXt3eyzYsTLqFvMW/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">04. The Gate</h4>
+            <iframe src="https://drive.google.com/file/d/1SvIHwQq0bv1rT1xCjNg4FdgaJ5GgP2IO/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">05. Faces</h4>
+            <iframe src="https://drive.google.com/file/d/1kuejHkWMl4vQ2luMPMGttgiaqf4TZE3W/preview" allow="autoplay"></iframe>
+          </div>
+        </div>
+      `;
+      modal.classList.add('active');
+    }
+
+    function openPodcastShowcase() {
+      const modal = document.getElementById('galleryModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalGallery = document.getElementById('modalGallery');
+      
+      modalTitle.textContent = "PODCAST PRODUCTION (4 VIDEOS)";
+      modalGallery.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:20px; width:100%;">
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">01. Copy of Final El Healthy Ep1</h4>
+            <iframe src="https://drive.google.com/file/d/1b_lFg8Kyb6bfBBTmp__wmAAo_y8ybnxk/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">02. Copy of Dr.Tarek</h4>
+            <iframe src="https://drive.google.com/file/d/1tkntdlWyjhUQPA1wjuZC8X1nzYPykZb8/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">03. Copy of 1st</h4>
+            <iframe src="https://drive.google.com/file/d/1dGCZlFudGphU4wXcbLLmzpbBY2jHQZkh/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">04. Reels Test</h4>
+            <iframe src="https://drive.google.com/file/d/1Y49CT2JenN-0XveR-XUl8h1lu0Y9J-wk/preview" allow="autoplay"></iframe>
+          </div>
+        </div>
+      `;
+      modal.classList.add('active');
+    }
+
+    function openConstructionsShowcase() {
+      const modal = document.getElementById('galleryModal');
+      const modalTitle = document.getElementById('logo' in window ? '' : 'modalTitle');
+      const modalGallery = document.getElementById('modalGallery');
+      
+      document.getElementById('modalTitle').textContent = "ARCHITECTURE & CONSTRUCTIONS (2 VIDEOS)";
+      modalGallery.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:20px; width:100%;">
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">01. Q NORTH stm</h4>
+            <iframe src="https://drive.google.com/file/d/11jYxoBcXETfIihkp7dfrQyb2ksLXJ8JS/preview" allow="autoplay"></iframe>
+          </div>
+          <div>
+            <h4 style="margin-bottom:8px; color:#e30613; font-size:14px;">02. Rock Vera 1</h4>
+            <iframe src="https://drive.google.com/file/d/1PzxGCmI5vQ1HFYM5Mia3jLlXqamJjzyT/preview" allow="autoplay"></iframe>
+          </div>
+        </div>
+      `;
+      modal.classList.add('active');
+    }
+
+    function closeGallery() {
+      const modal = document.getElementById('galleryModal');
+      const modalGallery = document.getElementById('modalGallery');
+      modal.classList.remove('active');
+      modalGallery.innerHTML = '';
+    }
+  </script>
+</body>
+</html>
